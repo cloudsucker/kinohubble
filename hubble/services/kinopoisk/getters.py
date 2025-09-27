@@ -16,9 +16,7 @@ from hubble.services.kinopoisk.service_utils import filter_recursive
 from hubble.services.kinopoisk.service_utils import MEDIA_CONTENT_TYPES
 
 
-async def get_search(
-    query: str, debug: bool = False
-) -> None | dict | tuple[dict, dict]:
+async def get_search(query: str) -> None | dict | tuple[dict, dict]:
     """
     Функция для получения данных по запросу поиска Кинопоиск API.
     При значении debug=True возвращает кортеж из двух словарей,
@@ -26,8 +24,6 @@ async def get_search(
 
     Parameters:
         query (str): Запрос поиска.
-        debug (bool): Флаг для отладки (получения оригинального ответа сервера
-        помимо обработанного json).
     """
 
     response = await suggest_search_async(query)
@@ -95,14 +91,10 @@ async def get_search(
         parsed_data = filter_recursive(parsed_data)
         if parsed_data.keys() == {"typename"}:
             parsed_data = {}
-    if debug:
-        return response_data, parsed_data
     return parsed_data
 
 
-async def get_info(
-    content_type: str, id: int, debug: bool = False
-) -> None | dict | tuple[dict, dict]:
+async def get_info(content_type: str, id: int) -> None | dict | tuple[dict, dict]:
     """
     Функция для получения данных о фильмах и сериалах используя два разных запроса
     к API Кинопоиск в зависимости от типа контента.
@@ -110,8 +102,6 @@ async def get_info(
     Parameters:
         content_type (str): Тип контента: 'film' или 'tvseries'.
         id (int): ID контента.
-        debug (bool): Флаг для отладки (получения оригинального ответа сервера
-        помимо обработанного json).
 
     Returns:
         dict | tuple[dict, dict]: Обработанные данные или кортеж из двух словарей,
@@ -140,13 +130,11 @@ async def get_info(
         parsed_data = parse_movie_data(root)
         parsed_data = filter_recursive(parsed_data)
 
-    if debug:
-        return response_data, parsed_data
     return parsed_data
 
 
 async def get_similars(
-    content_type: str, id: int, debug: bool = False
+    content_type: str, id: int
 ) -> None | list[dict] | tuple[dict, list[dict]]:
     """
     Функция для получения данных о похожих фильмах и сериалах используя два разных запроса
@@ -155,8 +143,6 @@ async def get_similars(
     Parameters:
         content_type (str): Тип контента: 'film' или 'tvseries'.
         id (int): ID контента.
-        debug (bool): Флаг для отладки (получения оригинального ответа сервера
-        помимо обработанного json).
 
     Returns:
         list[dict] | tuple[dict, list[dict]]: Обработанные данные или кортеж из двух словарей,
@@ -190,12 +176,10 @@ async def get_similars(
 
         parsed_data = filter_recursive(parsed_data)
 
-    if debug:
-        return response_data, parsed_data
     return parsed_data
 
 
-async def get_person(id: int, debug: bool = False) -> None | dict | tuple[dict, dict]:
+async def get_person(id: int) -> None | dict | tuple[dict, dict]:
     response = await person_preview_card_async(id)
 
     if not response or not response.ok:
@@ -209,13 +193,11 @@ async def get_person(id: int, debug: bool = False) -> None | dict | tuple[dict, 
         parsed_data = parse_person_data(person_root)
         parsed_data = filter_recursive(parsed_data)
 
-    if debug:
-        return response_data, parsed_data
     return parsed_data
 
 
 async def get_trivias(
-    content_type: str, id: int, debug: bool = False
+    content_type: str, id: int
 ) -> None | list[dict] | tuple[dict, list[dict]]:
     ct_key = get_nested(MEDIA_CONTENT_TYPES, content_type, required=True)
 
@@ -239,13 +221,11 @@ async def get_trivias(
 
         parsed_data = filter_recursive(parsed_data)
 
-    if debug:
-        return response_data, parsed_data
     return parsed_data
 
 
 async def get_media_posts(
-    content_type: str, id: int, debug: bool = False
+    content_type: str, id: int
 ) -> None | list[dict] | tuple[dict, list[dict]]:
     ct_key = get_nested(MEDIA_CONTENT_TYPES, content_type, required=True)
 
@@ -271,6 +251,4 @@ async def get_media_posts(
 
     parsed_data = filter_recursive(parsed_data)
 
-    if debug:
-        return response_data, parsed_data
     return parsed_data
