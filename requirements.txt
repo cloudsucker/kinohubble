@@ -1,3 +1,4 @@
 git+https://github.com/cloudsucker/kinopapi.git#egg=kinopapi
 uvicorn==0.34.0
 litestar==2.14.0
+beautifulsoup4==4.13.5
