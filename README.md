@@ -13,9 +13,8 @@ cd /opt/kinohubble
 sudo chmod +x deploy.sh
 ```
 
-### 3. Первый запуск (сам создаст сервис и запустит)
+### 3. Первый запуск
 
 ```bash
-sudo apt install python3.12-venv
 sudo ./deploy.sh
 ```
